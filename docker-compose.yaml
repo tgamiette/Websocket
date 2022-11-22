@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
     symfony:
-        build: docker/php
+        build:
+            context: .
+            dockerfile: ./docker/php/Dockerfile
         container_name: symfony_websocket
         environment:
             DATABASE_URL: mysql://$MYSQL_USER:$MYSQL_PASSWORD@db/$MYSQL_DATABASE?serverVersion=mariadb-$MYSQL_VERSION
@@ -10,7 +12,7 @@ services:
             - "8245:80"
         volumes:
             - ./docker/php/conf/nginx.conf:/etc/nginx/http.d/default.conf
-            - ./app/symfony:/var/www/symfony
+            - ./app/test:/var/www/symfony
         restart: always
 
     node:
