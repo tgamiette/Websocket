@@ -10,6 +10,9 @@ up:
 bash:
 		docker exec -ti symfony_websocket sh
 
+bash-front:
+		docker exec -ti react_websocket sh
+
 stop:
 		docker-compose stop
 
@@ -21,5 +24,5 @@ build-dev:
 		docker exec symfony_websocket sh -c 'symfony console assets:install public'
 		docker exec symfony_websocket sh -c 'symfony console doctrine:schema:update --force'
 		docker exec symfony_websocket sh -c 'symfony console cache:clear'
-		docker exec symfony_websocket sh -c 'npm install'
-		docker exec symfony_websocket sh -c 'npm start'
+		docker exec react_websocket sh -c 'npm install'
+#		docker exec react_websocket sh -c 'npm start'
