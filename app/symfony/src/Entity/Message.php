@@ -23,9 +23,9 @@ class Message
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Topic $topic = null;
+    private ?Chat $chat = null;
 
     public function getId(): ?int
     {
@@ -56,14 +56,14 @@ class Message
         return $this;
     }
 
-    public function getTopic(): ?Topic
+    public function getChat(): ?Chat
     {
-        return $this->topic;
+        return $this->chat;
     }
 
-    public function setTopic(?Topic $topic): self
+    public function setChat(?Chat $chat): self
     {
-        $this->topic = $topic;
+        $this->chat = $chat;
 
         return $this;
     }

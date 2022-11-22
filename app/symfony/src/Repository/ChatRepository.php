@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Topic;
+use App\Entity\Chat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Topic>
+ * @extends ServiceEntityRepository<Chat>
  *
- * @method Topic|null find($id, $lockMode = null, $lockVersion = null)
- * @method Topic|null findOneBy(array $criteria, array $orderBy = null)
- * @method Topic[]    findAll()
- * @method Topic[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Chat|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Chat|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Chat[]    findAll()
+ * @method Chat[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TopicRepository extends ServiceEntityRepository
+class ChatRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Topic::class);
+        parent::__construct($registry, Chat::class);
     }
 
-    public function save(Topic $entity, bool $flush = false): void
+    public function save(Chat $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class TopicRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Topic $entity, bool $flush = false): void
+    public function remove(Chat $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class TopicRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Topic[] Returns an array of Topic objects
+//     * @return Chat[] Returns an array of Chat objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class TopicRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Topic
+//    public function findOneBySomeField($value): ?Chat
 //    {
 //        return $this->createQueryBuilder('t')
 //            ->andWhere('t.exampleField = :val')

@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\TopicRepository;
+use App\Repository\ChatRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TopicRepository::class)]
-class Topic
+#[ORM\Entity(repositoryClass: ChatRepository::class)]
+class Chat
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,7 +18,7 @@ class Topic
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $topic = null;
 
-    #[ORM\OneToMany(mappedBy: 'topic', targetEntity: message::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'chat', targetEntity: Message::class, orphanRemoval: true)]
     private Collection $messages;
 
     public function __construct()
@@ -51,22 +51,22 @@ class Topic
         return $this->messages;
     }
 
-    public function addMessage(message $message): self
+    public function addMessage(Message $message): self
     {
         if (!$this->messages->contains($message)) {
             $this->messages->add($message);
-            $message->setTopic($this);
+            $message->setChat($this);
         }
 
         return $this;
     }
 
-    public function removeMessage(message $message): self
+    public function removeMessage(Message $message): self
     {
         if ($this->messages->removeElement($message)) {
             // set the owning side to null (unless already changed)
-            if ($message->getTopic() === $this) {
-                $message->setTopic(null);
+            if ($message->getChat() === $this) {
+                $message->setChat(null);
             }
         }
 
