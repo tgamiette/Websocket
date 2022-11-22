@@ -12,8 +12,6 @@ services:
             - ./docker/php/conf/nginx.conf:/etc/nginx/http.d/default.conf
             - ./app/symfony:/var/www/symfony
         restart: always
-        networks:
-            - dev
 
     node:
         container_name: react_websocket
@@ -29,8 +27,6 @@ services:
         environment:
             - CHOKIDAR_USEPOLLING=true
             - FAST_REFRESH=false
-        networks:
-            - dev
 
     maildev:
         image: maildev/maildev
@@ -39,8 +35,6 @@ services:
         ports:
             - "8081:80"
         restart: always
-        networks:
-            - dev
 
     db:
         build: docker/bdd
@@ -48,15 +42,11 @@ services:
         restart: always
         ports:
             - "3306:3306"
-        volumes:
-            - db-data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
             MYSQL_DATABASE: ${MYSQL_DATABASE:-projectName}
             MYSQL_USER: $MYSQL_USER
             MYSQL_PASSWORD: $MYSQL_PASSWORD
-        networks:
-            - dev
 
     phpmyadmin:
         image: phpmyadmin
@@ -68,8 +58,6 @@ services:
             - "8080:80"
         environment:
             PMA_HOST: db
-        networks:
-            - dev
 
     caddy:
         image: dunglas/mercure
@@ -92,11 +80,7 @@ services:
 #        volumes:
 #            - caddy_data:/data
 #            - caddy_config:/config
-        networks:
-            - dev
 
-networks:
-    dev:
 
 volumes:
     db-data:
