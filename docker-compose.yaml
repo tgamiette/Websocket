@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
     symfony:
-        build:
-            context: .
-            dockerfile: ./docker/php/Dockerfile
+        build: docker/php
         container_name: symfony_websocket
         environment:
             DATABASE_URL: mysql://$MYSQL_USER:$MYSQL_PASSWORD@db/$MYSQL_DATABASE?serverVersion=mariadb-$MYSQL_VERSION
