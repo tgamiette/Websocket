@@ -6,6 +6,7 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 class Message
@@ -56,12 +57,7 @@ class Message
         return $this;
     }
 
-    public function getChat(): ?Chat
-    {
-        return $this->chat;
-    }
-
-    public function setChat(?Chat $topic): self
+    public function setChat(?Chat $chat): self
     {
         $this->chat = $chat;
 

@@ -18,7 +18,7 @@ class Chat
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $topic = null;
 
-    #[ORM\OneToMany(mappedBy: 'topic', targetEntity: message::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'chat', targetEntity: Message::class, orphanRemoval: true)]
     private Collection $messages;
 
     public function __construct()
@@ -55,7 +55,7 @@ class Chat
     {
         if (!$this->messages->contains($message)) {
             $this->messages->add($message);
-            $message->setTopic($this);
+            $message->setChat($this);
         }
 
         return $this;
@@ -65,8 +65,8 @@ class Chat
     {
         if ($this->messages->removeElement($message)) {
             // set the owning side to null (unless already changed)
-            if ($message->getTopic() === $this) {
-                $message->setTopic(null);
+            if ($message->getChat() === $this) {
+                $message->setChat(null);
             }
         }
 
