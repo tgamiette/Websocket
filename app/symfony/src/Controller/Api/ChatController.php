@@ -3,7 +3,6 @@
 namespace App\Controller\Api;
 
 use App\Entity\Message;
-use App\Entity\Chat;
 use App\Entity\User;
 use App\Repository\ChatRepository;
 use App\Service\ChatHelper;
@@ -23,8 +22,7 @@ class ChatController extends AbstractController {
 
     #[Route('/{topic}', name: 'chat_getMessages', methods: 'GET')]
     #[IsGranted('ROLE_USER')]
-    public function getTopicMessages(ChatRepository $chatRepository, string $topic): JsonResponse
-    {
+    public function getTopicMessages(ChatRepository $chatRepository, string $topic): JsonResponse {
         $chat = $chatRepository->findOneByTopic($topic);
 
         if (!$chat) {
@@ -34,12 +32,12 @@ class ChatController extends AbstractController {
         $this->chatHelper->hasAccessChat($chat);
         $messageCollection = $chat->getMessages();
 
-        return $this->json(['message' => $messageCollection], context: ['group' => 'default']);
+
+        return $this->json(['message' => $messageCollection], context: ['groups' => 'get:chat']);
     }
 
-    #[Route('/{id}/send-message', name: 'chat_sendMessage', methods: 'POST')]
-    public function createMessage(int $id, Request $request)
-    {
+    #[Route('/send-message', name: 'chat_sendMessage', methods: 'POST')]
+    public function createMessage(Request $request) {
         $content = $request->get('content');
         $recipientName = $request->get('recipient');
 
@@ -63,6 +61,6 @@ class ChatController extends AbstractController {
         $this->em->persist($message);
         $this->em->flush();
 
-        return $this->json(['message' => "Message envoyé"], context: ['group' => 'default']);
+        return $this->json(['message' => "Message envoye"], context: ['group' => 'default']);
     }
 }

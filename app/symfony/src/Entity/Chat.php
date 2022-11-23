@@ -19,6 +19,7 @@ class Chat
     private ?string $topic = null;
 
     #[ORM\OneToMany(mappedBy: 'chat', targetEntity: Message::class, orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'ASC'])]
     private Collection $messages;
 
     public function __construct()
