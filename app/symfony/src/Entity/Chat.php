@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\TopicRepository;
+use App\Repository\ChatRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TopicRepository::class)]
-class Topic
+#[ORM\Entity(repositoryClass: ChatRepository::class)]
+class Chat
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
