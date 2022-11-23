@@ -32,7 +32,6 @@ class ChatController extends AbstractController {
         $this->chatHelper->hasAccessChat($chat);
         $messageCollection = $chat->getMessages();
 
-
         return $this->json(['message' => $messageCollection], context: ['groups' => 'get:chat']);
     }
 
