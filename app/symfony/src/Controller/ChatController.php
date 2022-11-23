@@ -6,12 +6,12 @@ use App\Entity\Message;
 use App\Entity\Chat;
 use App\Entity\User;
 use App\Repository\ChatRepository;
-use App\Repository\UserRepository;
 use App\Service\ChatHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,12 +38,16 @@ class ChatController extends AbstractController
     }
 
     #[Route('/chat/{id}/send-message', name: 'chat_sendMessage', methods: 'POST')]
-    public function createMessage($id, EntityManagerInterface $em, UserRepository $repository, ChatHelper $chatHelper)
-    {
+    public function createMessage(int $id, Request $request) {
+
+        $content = $request->get('content');
+        $destinataireName = $request->get('destinataire');
 
         /** @var User $userLogged */
         $userLogged = $this->getUser();
-        $user = $repository->find($id);
+//        $chat = $this->em->getRepository(Chat::class)->find($id);
+        $destinataire = $this->em->getRepository(User::class)->findOneBy(['username' => $destinataireName]);
+        $chat = $this->chatHelper->getChat($destinataire);
 
         //helper pour check s'il a bien les droits pour envoyer un message sur ce chat
         $chatHelper->checkAccessChat($id);
@@ -53,7 +57,7 @@ class ChatController extends AbstractController
         $message
             ->setChat($chat)
             ->setUser($userLogged)
-            ->setContent('');
+            ->setContent($content);
 
         $em->persist($message);
         $em->flush();

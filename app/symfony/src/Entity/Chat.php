@@ -51,7 +51,7 @@ class Chat
         return $this->messages;
     }
 
-    public function addMessage(message $message): self
+    public function addMessage(Message $message): self
     {
         if (!$this->messages->contains($message)) {
             $this->messages->add($message);
@@ -61,7 +61,7 @@ class Chat
         return $this;
     }
 
-    public function removeMessage(message $message): self
+    public function removeMessage(Message $message): self
     {
         if ($this->messages->removeElement($message)) {
             // set the owning side to null (unless already changed)
