@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Entity\Message;
 use App\Entity\Chat;
@@ -16,28 +16,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ChatController extends AbstractController
-{
-    #[Route('/chat/{chat}', name: 'chat_getMessages', methods: 'GET')]
+#[Route('/api/chat', name: 'api_chat_')]
+class ChatController extends AbstractController {
+    public function __construct(private ChatHelper $chatHelper, private EntityManagerInterface $em) {
+    }
+
+    #[Route('/{id}', name: 'chat_getMessages', methods: 'GET')]
     #[IsGranted('ROLE_USER')]
-    public function getTopicMessages(ChatRepository $chatRepository, $chat): JsonResponse
-    {
+    public function getTopicMessages(ChatRepository $chatRepository, int $id): JsonResponse {
         /** @var User $userLogged */
-        $userLogged = $this->getUser();
-        $user = $this->getUser();
-        $chat = $chatRepository->findOneBy(['chat' => $chat]);
+        $chat = $chatRepository->findOneBy(['$id' => $id]);
 
-        $chatHelper->checkAccessChat($id);
-
-        if ($chat->getTopic() !== ($user->getId() . '.' . $userLogged->getId())) {
-            throw new HttpException(Response::HTTP_FORBIDDEN);
+        if (!$chat) {
+            throw new HttpException(Response::HTTP_NOT_FOUND);
         }
+
+        $this->chatHelper->hasAccessChat($chat);
         $messageCollection = $chat->getMessages();
 
         return $this->json(['message' => $messageCollection], context: ['group' => 'default']);
     }
 
-    #[Route('/chat/{id}/send-message', name: 'chat_sendMessage', methods: 'POST')]
+    #[Route('/{id}/send-message', name: 'chat_sendMessage', methods: 'POST')]
     public function createMessage(int $id, Request $request) {
 
         $content = $request->get('content');
@@ -50,8 +50,8 @@ class ChatController extends AbstractController
         $chat = $this->chatHelper->getChat($destinataire);
 
         //helper pour check s'il a bien les droits pour envoyer un message sur ce chat
-        $chatHelper->checkAccessChat($id);
-        $chat->setTopic($user->getId() . '.' . $userLogged->getId());
+        $this->chatHelper->hasAccessChat($chat);
+
 
         $message = new Message();
         $message
@@ -59,7 +59,9 @@ class ChatController extends AbstractController
             ->setUser($userLogged)
             ->setContent($content);
 
-        $em->persist($message);
-        $em->flush();
+        $this->em->persist($message);
+        $this->em->flush();
+
+        return $this->json(['message' => "Message envoyé"], context: ['group' => 'default']);
     }
 }
