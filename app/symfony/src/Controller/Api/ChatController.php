@@ -21,11 +21,11 @@ class ChatController extends AbstractController {
     public function __construct(private ChatHelper $chatHelper, private EntityManagerInterface $em) {
     }
 
-    #[Route('/{id}', name: 'chat_getMessages', methods: 'GET')]
+    #[Route('/{topic}', name: 'chat_getMessages', methods: 'GET')]
     #[IsGranted('ROLE_USER')]
-    public function getTopicMessages(ChatRepository $chatRepository, int $id): JsonResponse {
-        /** @var User $userLogged */
-        $chat = $chatRepository->findOneBy(['$id' => $id]);
+    public function getTopicMessages(ChatRepository $chatRepository, string $topic): JsonResponse
+    {
+        $chat = $chatRepository->findOneByTopic($topic);
 
         if (!$chat) {
             throw new HttpException(Response::HTTP_NOT_FOUND);
@@ -38,16 +38,15 @@ class ChatController extends AbstractController {
     }
 
     #[Route('/{id}/send-message', name: 'chat_sendMessage', methods: 'POST')]
-    public function createMessage(int $id, Request $request) {
-
+    public function createMessage(int $id, Request $request)
+    {
         $content = $request->get('content');
-        $destinataireName = $request->get('destinataire');
+        $recipientName = $request->get('recipient');
 
         /** @var User $userLogged */
         $userLogged = $this->getUser();
-//        $chat = $this->em->getRepository(Chat::class)->find($id);
-        $destinataire = $this->em->getRepository(User::class)->findOneBy(['username' => $destinataireName]);
-        $chat = $this->chatHelper->getChat($destinataire);
+        $recipient = $this->em->getRepository(User::class)->findOneBy(['username' => $recipientName]);
+        $chat = $this->chatHelper->getChat($recipient);
 
         //helper pour check s'il a bien les droits pour envoyer un message sur ce chat
         $this->chatHelper->hasAccessChat($chat);
@@ -57,7 +56,9 @@ class ChatController extends AbstractController {
         $message
             ->setChat($chat)
             ->setUser($userLogged)
-            ->setContent($content);
+            ->setContent($content)
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setUpdatedAt(new \DateTimeImmutable());
 
         $this->em->persist($message);
         $this->em->flush();
