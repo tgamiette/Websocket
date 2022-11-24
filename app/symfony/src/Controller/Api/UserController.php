@@ -23,8 +23,7 @@ class UserController extends AbstractController {
         $userCollection = $userRepository->getAllButMe($user);
 
         return $this->json(
-            ['users' => $userCollection,
-                'tot'=>"je suis un toto "]
+            ['users' => $userCollection]
             , 200,
             [],
             ['groups' => 'main']);
