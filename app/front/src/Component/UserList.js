@@ -1,18 +1,37 @@
 import {useEffect, useState} from "react";
 import useGetUserList from "../Hook/useGetUserList";
-import useBackendPing from "../Hook/useBackendPing";
+import {useGetNewChat} from "../Hook/useGetNewChat";
+import {useNavigate} from "react-router-dom"
+
 
 export default function UserList() {
     const [userList, setUserList] = useState([]);
-
+    const navigate = useNavigate();
+    const [topic, setTopic] = useState("");
+    const [recipient, setRecipient] = useState("");
+    const newChat = useGetNewChat(recipient);
     const getUserList = useGetUserList();
-    const backendPing = useBackendPing();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const userId = e.target[0].value;
-        backendPing(userId).then(data => console.log(data))
+
+    const handleNewChat = (id) => {
+        const userId = id;
+        setRecipient(id);
     }
+
+    useEffect(() => {
+        newChat().then(data => setTopic(data));
+    }, [recipient]);
+
+    useEffect(() => {
+        if (topic !== "") {
+            navigate(`/chat/${topic.id}`, {
+                state: {
+                    topic: topic.id,
+                    isTopic: topic.message.length > 0 ? true : false
+                }
+            });
+        }
+    }, [topic])
 
     const handleMessage = (e) => {
         document.querySelector('h1').insertAdjacentHTML('afterend', '<div class="alert alert-success w-75 mx-auto">Ping !</div>');
@@ -26,8 +45,11 @@ export default function UserList() {
     useEffect(() => {
         getUserList().then(data => setUserList(data.users));
 
+
         const url = new URL('http://localhost:9090/.well-known/mercure');
         url.searchParams.append('topic', 'https://example.com/my-private-topic');
+
+        console.log(url.toString());
 
         const eventSource = new EventSource(url, {withCredentials: true});
         eventSource.onmessage = handleMessage;
@@ -40,11 +62,15 @@ export default function UserList() {
 
     return (
         <div>
-            <h1 className='m-5 text-center'>Ping a user</h1>
+            <h1 className='m-5 text-center'>What's app</h1>
             {userList.map((user) => (
-                <form className='w-75 mx-auto mb-3' onSubmit={handleSubmit}>
-                    <button className='btn btn-dark w-100' type='submit' value={user.id}>{user.username}</button>
-                </form>
+                <>
+                    <span>{user.username}</span>
+                    <button className='btn btn-dark w-100' type='submit' value={user.id}
+                            onClick={() => handleNewChat(user.id)}>Nouvelle conversation
+                    </button>
+                    <a href="/chat">chat</a>
+                </>
 
             ))}
         </div>

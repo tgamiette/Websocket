@@ -22,6 +22,7 @@ class ApiBasicAuthenticator extends AbstractAuthenticator
     {
         $username = $request->headers->get('php-auth-user') ?? '';
         $pwd = $request->headers->get('php-auth-pw') ?? '';
+//     dd($username, $pwd);
         return new Passport(
             new UserBadge($username),
             new PasswordCredentials($pwd)

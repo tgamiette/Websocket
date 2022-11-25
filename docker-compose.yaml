@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
     symfony:
-        build:
-            context: .
-            dockerfile: ./docker/php/Dockerfile
+        build: docker/php
         container_name: symfony_websocket
         environment:
             DATABASE_URL: mysql://$MYSQL_USER:$MYSQL_PASSWORD@db/$MYSQL_DATABASE?serverVersion=mariadb-$MYSQL_VERSION
@@ -68,8 +66,8 @@ services:
         environment:
             # Uncomment the following line to disable HTTPS
             SERVER_NAME: ':80'
-            MERCURE_PUBLISHER_JWT_KEY: '!ChangeMe!'
-            MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeMe!'
+            MERCURE_PUBLISHER_JWT_KEY: '!pleaseChangeMeNigga!'
+            MERCURE_SUBSCRIBER_JWT_KEY: '!pleaseChangeMeNigga!'
             MERCURE_EXTRA_DIRECTIVES:
                 cors_origins "http://localhost:3000"
                 cors_origins "http://localhost:8245"

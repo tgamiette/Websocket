@@ -36,4 +36,21 @@ class JWTHelper
             return false;
         }
     }
+
+    public function decodeJwt(string $jwt)
+    {
+        if (!$this->isJwtValid($jwt)) {
+        }
+        try {
+            return JWT::decode($jwt, new Key($this->mercureSecret, 'HS256'));
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function getUsernameFromToken(string $token) {
+
+        $decoded = $this->decodeJwt($token);
+        return $decoded->mercure->payload->username;
+    }
 }
