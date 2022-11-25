@@ -52,12 +52,18 @@ class ChatHelper {
      * @return Chat
      */
     public function getListPublishChat(Chat $chat): array {
-
+        $listPublish = [];
         $baseUri = 'https://example.com/user/';
+
         $usersId = explode('.', $chat->getTopic());
+        $userlogged = $this->security->getUser()->getId();
 
-         return array_map(fn($userId) => $baseUri.$userId , $usersId);
-
+        foreach ($usersId as $userId) {
+            if ($userId != $userlogged) {
+                $listPublish[] = $baseUri . $userId;
+            }
+        }
+        return $listPublish;
     }
 
     private function getUserListChat(Chat $chat): Collection {

@@ -74,7 +74,7 @@ class ChatController extends AbstractController {
         $listPublish = $this->chatHelper->getListPublishChat($chat);
         $listPublish[] = "https://example.com/my-private-topic";
 
-        dd($hub->publish(new Update(
+        $hub->publish(new Update(
             $listPublish,
             $this->json([
                 'message' => $message,
@@ -82,7 +82,8 @@ class ChatController extends AbstractController {
                 'recipient' => $recipientList,
                 'topic' => $chat->getTopic()
             ], context: ['groups'=>'get:chat']),
-        )));
+            false,
+        ));
 
         return $this->json(['message' => "Message envoyé"], context: ['groups' => 'get:chat']);
     }
