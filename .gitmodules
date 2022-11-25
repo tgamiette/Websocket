@@ -1,0 +1,6 @@
+[submodule "app/app/reactNative"]
+	path = app/app/reactNative
+	url = https://github.com/tgamiette/Websocket
+[submodule "app/reactNative"]
+	path = app/reactNative
+	url = https://github.com/tgamiette/Websocket

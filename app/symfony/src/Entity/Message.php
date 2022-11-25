@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Message
 {
     use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -34,6 +35,13 @@ class Message
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Chat $chat = null;
+
+    public function setID(?id $id): ?int
+    {
+        $this->id = $id;
+        return $this;
+    }
+
 
     public function getId(): ?int
     {

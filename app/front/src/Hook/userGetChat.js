@@ -1,13 +1,11 @@
-import {useState, useContext} from "react";
+import {useContext} from "react";
 import {userContext} from "../Context/UserContext";
 
-export default function useGetUserList() {
-
+export default function useGetChat(topic) {
     const user = useContext(userContext);
     
     return function () {
-
-        return fetch('http://localhost:8245/api/user/list', {
+        return fetch(`http://localhost:8245/api/chat/${topic}`, {
             method: 'GET',
             mode: "cors",
             headers: {

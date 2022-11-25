@@ -16,13 +16,16 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/chat', name: 'api_chat_')]
-class ChatController extends AbstractController {
-    public function __construct(private ChatHelper $chatHelper, private EntityManagerInterface $em) {
+class ChatController extends AbstractController
+{
+    public function __construct(private ChatHelper $chatHelper, private EntityManagerInterface $em)
+    {
     }
 
     #[Route('/{topic}', name: 'chat_getMessages', methods: 'GET')]
     #[IsGranted('ROLE_USER')]
-    public function getTopicMessages(ChatRepository $chatRepository, string $topic): JsonResponse {
+    public function getTopicMessages(ChatRepository $chatRepository, string $topic): JsonResponse
+    {
         $chat = $chatRepository->findOneByTopic($topic);
 
         if (!$chat) {
@@ -37,7 +40,8 @@ class ChatController extends AbstractController {
     }
 
     #[Route('/send-message', name: 'chat_sendMessage', methods: 'POST')]
-    public function createMessage(Request $request) {
+    public function createMessage(Request $request)
+    {
         $content = $request->get('content');
         $recipientName = $request->get('recipient');
 
@@ -62,5 +66,21 @@ class ChatController extends AbstractController {
         $this->em->flush();
 
         return $this->json(['message' => "Message envoye"], context: ['group' => 'default']);
+    }
+
+    #[Route('/user/{id}', name: 'chat_getPrivateMessages', methods: 'GET')]
+    #[IsGranted('ROLE_USER')]
+    public function getPrivateTopicMessages(ChatRepository $chatRepository, $id): JsonResponse
+    {
+        /** @var User $userLogged
+         */
+
+        $userLogged = $this->getUser();
+        $user2 = $this->em->getRepository(User::class)->find($id);
+        $chat = $this->chatHelper->getChat($user2);
+
+        $messageCollection = $chat->getMessages();
+
+        return $this->json(['id' => $chat->getTopic(), 'message' => $messageCollection], context: ['groups' => 'get:chat']);
     }
 }
