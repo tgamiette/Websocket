@@ -29,7 +29,7 @@ Future<void> main() async {
   if (user == null) {
     print('User is currently signed out!');
     // runApp(const ListSection());
-    runApp( LoginApp);
+    runApp(const LoginApp());
   } else {
     //   print('User is signed in!');
     //   runApp( HomePage());
