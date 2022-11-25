@@ -4,6 +4,7 @@ import NeedAuth from "./Auth/NeedAuth";
 import UserList from "./Component/UserList";
 import Login from "./Auth/Login";
 import UserProvider from "./Context/UserContext";
+import QrCode from "./Component/QrCode";
 
 function App() {
     return (
@@ -12,7 +13,7 @@ function App() {
                 <Routes>
                     <Route path='/' element={
                         <NeedAuth>
-                            <UserList/>
+                            <QrCode/>
                         </NeedAuth>
                     }/>
                     <Route path='/login' element={<Login/>}/>
