@@ -18,11 +18,17 @@ stop:
 
 restart: stop up
 
+build-native:
+		docker exec react_websocket sh -c 'cd ../react_native_app && yarn install'
+start-react-native:
+		docker exec react_websocket sh -c 'cd ../react_native_app && yarn web'
+
 build-dev:
+		docker-compose up -d
 	    docker exec symfony_websocket chown -R www-data: var/
 		docker exec symfony_websocket sh -c 'composer install'
 		docker exec symfony_websocket sh -c 'symfony console assets:install public'
 		docker exec symfony_websocket sh -c 'symfony console doctrine:schema:update --force'
 		docker exec symfony_websocket sh -c 'symfony console cache:clear'
-		docker exec react_websocket sh -c 'npm install'
-#		docker exec react_websocket sh -c 'npm start'
+		make build-native
+		make start-react-native

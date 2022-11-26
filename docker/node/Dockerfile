@@ -16,7 +16,7 @@ WORKDIR /app/react
 RUN yarn install
 RUN yarn add npm@latest expo-cli@latest react-scripts -g --silent
 ## install global packages
-ENTRYPOINT ["yarn", "start"]
+CMD ["yarn", "start"]
 ##
 #WORKDIR /app/react_native_app
 #RUN yarn install

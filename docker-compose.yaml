@@ -30,6 +30,7 @@ services:
             - "3000:3000"
             - '19006:19006'
             - '19001:19001'
+            - '19000:19000'
             - '19002:19002'
         environment:
             - CHOKIDAR_USEPOLLING=true

@@ -13,5 +13,8 @@ docker exec symfony_websocket sh -c 'chown -Rf www-data: var/'
 docker exec symfony_websocket sh -c 'symfony console d:s:u --force'
 docker exec symfony_websocket sh -c 'symfony console d:f:l --append'
 
+docker exec react_websocket sh -c 'cd ../react_native_app && yarn install'
+docker exec react_websocket sh -c 'cd ../react_native_app && yarn web'
+
 #docker exec symfony_websocket sh -c 'npm install'
 #docker exec symfony_websocket sh -c 'npm run watch'
