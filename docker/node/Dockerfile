@@ -1,19 +1,24 @@
 # pull official base image
-FROM node:19-alpine
+FROM node:16-alpine
 
 # set working directory
 WORKDIR /app
 
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+ENV PATH /home/node/.npm-global/bin:$PATH
+RUN chown node:node  . -R
 
-# install app dependencies
-COPY ./app/front/package.json ./
+
+## install app dependencies
+WORKDIR /app/react
 RUN yarn install
-RUN yarn add react-scripts -g --silent
-
-## add app
-COPY ./app/front/ ./
-
-# start app
-CMD ["yarn", "start"]
+RUN yarn add npm@latest expo-cli@latest react-scripts -g --silent
+## install global packages
+ENTRYPOINT ["yarn", "start"]
+##
+#WORKDIR /app/react_native_app
+#RUN yarn install
+#
+#ENTRYPOINT ["yarn", "web"]
