@@ -1,11 +1,15 @@
-import 'package:WhatsApp/res/assets_res.dart';
-import 'package:chatflutter/res/assets_res.dart';
+import 'package:WhatsAppClone/res/assets_res.dart';
+import 'package:WhatsAppClone/services/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:localstorage/localstorage.dart';
 
 import 'HomePage.dart';
+
+const String baseUrl = "http://localhost:8245";
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -15,54 +19,61 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late String errormsg;
+  late String errormsg, username, password;
   late bool error, showprogress;
-  late String username, password;
 
   final _username = TextEditingController();
   final _password = TextEditingController();
 
   startLogin(BuildContext context) async {
-    String apiurl = "http://localhost:8245/login"; //api url
-    //dont use http://localhost , because emulator don't get that address
-    //insted use your local IP address or use live URL
-    //hit "ipconfig" in windows or "ip a" in linux to get you local IP
-username = _username.text;
+    username = _username.text;
     password = _password.text;
+
     var auth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-    var response = await post(Uri.parse(apiurl), headers: {
-      'Content-Type': 'application/json',
+
+    String loginUrl = '${baseUrl}/login'; //api url
+
+    setState(() {
+      showprogress = true;
+      error = false;
+    });
+
+    await post(Uri.parse(loginUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
       'Authorization': auth
-    });
-    print(response.body);
+    }).then((response) {
+      if (response.statusCode == 200) {
+        final LocalStorage storage = LocalStorage('user');
 
-    if (response.statusCode == 200) {
-      print(response.body);
+        final Map<String, dynamic> data = json.decode(response.body);
+        final jwt = data["JWT"];
+        final box = GetStorage();
 
-      var jsondata = jsonDecode(response.body);
-          setState(() {
-            error = false;
-            showprogress = false;
-          });
-          //save the data returned from server
-          //and navigate to home page
-          // String uid = jsondata["uid"];
-          // String fullname = jsondata["fullname"];
-          // String address = jsondata["address"];
-          // String jwt = jsondata["JWT"];
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const HomePage()) );
-          //user shared preference to save data
-        }else {
-      print('pas connecter ?');
+        storage.setItem('jwt', data["JWT"]);
+        print(storage.getItem('jwt'));
+        box.write("jwt", jwt);
 
-      setState(() {
-        showprogress = false; //don't show progress indicator
-        error = true;
-        errormsg = "Error during connecting to server.";
-      });
-    }
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const HomePage()));
+      } else {
+        setState(() {
+          errormsg = "Invalid username or password";
+          error = true;
+          showprogress = false;
+        });
+      }
+    }) //if success
+        .catchError((error) => {
+              setState(() {
+                errormsg = error.toString();
+                error = true;
+                showprogress = false;
+              })
+            }); //if error
   }
+
+  // }
 
   @override
   void initState() {
@@ -91,7 +102,7 @@ username = _username.text;
               Container(
                 //show error message here
                 padding: EdgeInsets.all(10),
-                child:error? errmsg(errormsg):Container(),
+                child: error ? errmsg(errormsg) : Container(),
                 //if error == true then show error message
                 //else set empty container as child
               ),

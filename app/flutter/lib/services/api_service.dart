@@ -3,7 +3,7 @@ import 'dart:convert';
 import '../models/user.dart';
 
 class ApiService {
-  static const String baseUrl = "http://localhots:8245";
+  static const String baseUrl = "http://localhost:8245";
 
   static Future<List<User>> getUsers(String token) async {
     final response = await get(Uri.parse('$baseUrl/api/user'), headers: {
@@ -87,18 +87,19 @@ class ApiService {
         : throw Exception("Failed to delete user");
   }
 
-  static Future<Response> login(String username, String password) async {
+  static Future<dynamic> login(String username, String password) async {
     var auth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-    String loginUrl = '${baseUrl}login'; //api url
+    String loginUrl = '${baseUrl}/login'; //api url
 
-    final response = await post(Uri.parse(loginUrl), headers: <String, String>{
+    await post(Uri.parse(loginUrl), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
       'Authorization': auth
-    });
-    print(response.body);
-
-    return response;
+    }).then((response) {
+      print(response.body);
+      return response.body;
+    }) //if success
+        .catchError((error) => error); //if error
   }
 
   static Future<Response> register(User user) async {
