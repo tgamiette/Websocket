@@ -58,7 +58,7 @@ class SecurityController extends AbstractController
         return $this->json([
             'message' => 'Bad credentials',
             'Authorization' => 'Basic'
-        ]);
+        ], 401);
     }
 
     /**
