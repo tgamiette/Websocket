@@ -9,15 +9,7 @@ class AssetsRes {
 
   static const String
 
-  CROP.PHP
-
-  =
-
-  '
-
-  assets/images/crop.php.jpeg
-
-  ';
+  CROP='assets/images/crop.php.jpeg';
 
   static const String IMAGES = 'assets/images/images.jpeg';
   static const String IMG = 'assets/images/img.png';
