@@ -1,16 +1,28 @@
 import React from "react";
 import {createContext, useState} from "react";
 
-const AuthContext = createContext('');
 
-const AuthProvider = ( props ) => {
-    const [user, setUser] = useState('');
+export const authUserContext = createContext('');
+
+export default function AuthUserProvider(props) {
+    const [authUser, setAuthUser] = useState('');
 
     return (
-        <AuthContext.Provider value={[user, setUser()]}>
+        <authUserContext.Provider value={[authUser, setAuthUser]}>
             {props.children}
-        </AuthContext.Provider>
-        );
-};
-
-export { AuthContext, AuthProvider };
+        </authUserContext.Provider>
+    );
+}
+// const AuthContext = createContext('');
+//
+// const AuthProvider = ( props ) => {
+//     const [user, setUser] = useState('');
+//
+//     return (
+//         <AuthContext.Provider value={[user, setUser()]}>
+//             {props.children}
+//         </AuthContext.Provider>
+//         );
+// };
+//
+// export { AuthContext, AuthProvider };
