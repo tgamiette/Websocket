@@ -1,4 +1,4 @@
-name: chatflutter
+name: WhatsAppClone
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -38,11 +38,10 @@ dependencies:
   cupertino_icons: ^1.0.5
   get_storage: ^2.0.3
   http: ^0.13.3
-  cloud_firestore: ^4.1.0
-  firebase_auth: ^4.1.4
   google_fonts: ^3.0.1
   convert: ^3.1.1
   flutter_launcher_icons: ^0.11.0
+  localstorage: ^4.0.0+1
 
 dev_dependencies:
   flutter_test:
@@ -69,7 +68,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/bebe_yoda.webp
-    - assets/images/crop.php.jpeg
+    - assets/images/crop.jpeg
     - assets/images/images.jpeg
     - assets/images/img.png
 
@@ -100,6 +99,7 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 flutter_icons:
-  image_path: "assets/icons/logoapp.jpeg"
-#  ios: true
-#  android: true
+  image_path: "assets/icons/logo.png"
+  ios: true
+  android: true
+  adaptive_icon_background: "#FFFFFF"
