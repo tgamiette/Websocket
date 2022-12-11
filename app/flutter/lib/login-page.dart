@@ -51,7 +51,6 @@ class _LoginPageState extends State<LoginPage> {
         final box = GetStorage();
 
         storage.setItem('jwt', data["JWT"]);
-        print(storage.getItem('jwt'));
         box.write("jwt", jwt);
 
         Navigator.pushReplacement(

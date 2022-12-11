@@ -1,10 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'ListUserPage.dart';
 //
-//
-// String currentUserID = auth.currentUser!.uid;
-//
-//
 // class ChatPage extends StatelessWidget {
 //   final String otherUserID;
 //   final String otherUserName;
