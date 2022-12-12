@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import useGetUserList from "../Hook/useGetUserList";
 import {useGetNewChat} from "../Hook/useGetNewChat";
 import {Link, useNavigate} from "react-router-dom";
-import QrCode from "./QrCode";
 import '../App.css';
 
 
@@ -33,14 +32,9 @@ export default function UserList() {
         }
     }, [topic])
 
-    const handleMessage = (e) => {
-        document.querySelector('h1').insertAdjacentHTML('afterend', '<div class="alert alert-success w-75 mx-auto">Ping !</div>');
-        window.setTimeout(() => {
-            const $alert = document.querySelector('.alert');
-            $alert.parentNode.removeChild($alert);
-        }, 2000);
-        console.log(JSON.parse(e.data));
-    }
+    useEffect(() => {
+        getUserList().then(data => setUserList(data.users));
+    }, [])
 
 
     return (
