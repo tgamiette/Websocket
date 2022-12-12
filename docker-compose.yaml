@@ -20,10 +20,18 @@ services:
             dockerfile: ./docker/node/Dockerfile
         restart: always
         volumes:
-            - ./app/front:/app
-            - node_module:/app/node_modules
+            - ./app/front:/app/react
+            - node_module:/app/react/node_modules
+            - ./app/nativeReact:/app/react_native_app
+#            - ./react_native_app/package.json:/opt/react_native_app/package.json
+#            - ./react_native_app/package-lock.json:/opt/react_native_app/package-lock.json
+            - notused:/app/react_native_app/node_modules
         ports:
             - "3000:3000"
+            - '19006:19006'
+            - '19001:19001'
+            - '19000:19000'
+            - '19002:19002'
         environment:
             - CHOKIDAR_USEPOLLING=true
             - FAST_REFRESH=false
@@ -85,5 +93,6 @@ services:
 volumes:
     db-data:
     node_module:
+    notused:
 #    caddy_data:
 #    caddy_config:
