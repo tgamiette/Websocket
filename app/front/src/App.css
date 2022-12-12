@@ -53,3 +53,24 @@
     height: 1px;
     background: #eee;
 }
+
+.div_userlist {
+    height: 100%;
+    overflow: auto;
+}
+
+.user_row {
+    padding: 20px 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.d-flex.justify-content-center {
+    display: flex;
+    justify-content: center;
+
+
+}

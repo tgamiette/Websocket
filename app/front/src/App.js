@@ -9,26 +9,24 @@ import Chat from "./Component/Chat";
 
 function App() {
     return (
-        <UserProvider>
-            <BrowserRouter>
-                <Routes>
-                    <Route path='/' element={
-                        <NeedAuth>
-                            <UserList/>
-                        </NeedAuth>
-                    }/>
-                    <Route path='/user' element={
-                        <NeedAuth>
-                            <QrCode/>
-                        </NeedAuth>
-                    }/>
-                    <Route path='/chat/:id' element={
-                        <Chat/>
-                    } params/>
-                    <Route path='/login' element={<Login/>}/>
-                </Routes>
-            </BrowserRouter>
-        </UserProvider>
+        <BrowserRouter>
+            <Routes>
+                <Route path='/' element={
+                    <NeedAuth>
+                        <UserList/>
+                    </NeedAuth>
+                }/>
+                <Route path='/user' element={
+                    <NeedAuth>
+                        <QrCode/>
+                    </NeedAuth>
+                }/>
+                <Route path='/chat/:id' element={
+                    <Chat/>
+                } params/>
+                <Route path='/login' element={<Login/>}/>
+            </Routes>
+        </BrowserRouter>
     );
 }
 

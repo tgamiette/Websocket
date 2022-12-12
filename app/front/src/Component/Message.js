@@ -1,18 +1,19 @@
 import React from "react";
 import dayjs from "dayjs";
 import 'dayjs/locale/fr';
+import {useSelector} from "react-redux";
+import {selectUser} from "../Redux/userSlice";
 
 
 export default function Message(props) {
-
-
+    
     const date = props.message.createdAt;
     const user = props.message.user.username;
     const message = props.message.content;
 
-    const isCurrentUser = "Davion";
+    const currentUser = useSelector(selectUser);
 
-    return user !== isCurrentUser ? (
+    return user !== currentUser.username ? (
 
             <div className="d-flex flex-row justify-content-start">
                 <img

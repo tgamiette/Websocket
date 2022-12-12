@@ -1,23 +1,23 @@
-import {useContext} from "react";
-import {userContext} from "../Context/UserContext";
 import qs from 'qs';
+import {useSelector} from "react-redux";
+import {selectUser} from "../Redux/userSlice";
 
-export function useCreateNewTopic(recipient, content) {
-    const user = useContext(userContext);
+export function useCreateNewTopic() {
 
-    return function () {
+    const user = useSelector(selectUser);
 
-        var data = new FormData();
-        data.append('content', content);
-        data.append('recipient', recipient);
+    return function (recipient, content) {
 
         return fetch(`http://localhost:8245/api/chat/send-message`, {
             method: 'POST',
             mode: "cors",
-            data: data,
+            body: new URLSearchParams({
+                'content': content,
+                'recipient': recipient
+            }),
             headers: {
-                'Content-Type': 'application/form-data',
-                'Authorization': `Bearer ${user[0]}`
+                'Content-type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${user.jwt}`
             }
         })
             .then(data => data.json())

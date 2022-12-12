@@ -1,35 +1,43 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import Message from "./Message";
 import useGetChat from "../Hook/userGetChat";
 import {useLocation} from "react-router-dom";
-import FormMessage from "./FormMessage";
-
 import '../assets/style/Chat.css';
+import {useCreateNewTopic} from "../Hook/useCreateNewTopic";
 
 export default function Chat() {
 
-    const [chat, setChat] = React.useState("");
+    const [chat, setChat] = React.useState([]);
     const state = useLocation();
+    const newMessage = useCreateNewTopic();
 
-    const getChat = useGetChat(state.state.topic);
-    const isTopic = state.state.isTopic;
+    const getChat = useGetChat();
+    const [isTopic, setIsTopic] = useState(state.state.isTopic);
+    const recipient = state.state.recipient;
+    const [isReload, setIsReload] = useState(false);
 
 
     useEffect(() => {
         if (isTopic) {
-            getChat().then(data => setChat(data));
+            getChat(state.state.topic).then(data => setChat(data));
+            setIsReload(false);
         }
-    }, [isTopic])
+    }, [isTopic, isReload]);
 
-    console.log(chat);
 
-    const currentUser = "Davion";
-
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        newMessage(recipient, e.target.message.value).then(data => console.log(data));
+        e.target.message.value = '';
+        if (!isTopic) {
+            setIsTopic(true);
+        }
+        setIsReload(true);
+    }
 
     return (
-
         <section>
-            <a href={"/"}>Retour</a>
+            <a href={"/"} className="btn btn-warning">Retour</a>
             <div className="container py-5">
                 <div className="row d-flex justify-content-center">
                     <div className="col-md-10 col-lg-8 col-xl-6">
@@ -37,14 +45,13 @@ export default function Chat() {
                         <div className="card" id="chat2">
                             <div className="card-header d-flex justify-content-between align-items-center p-3">
                                 <h5 className="mb-0">Chat</h5>
-                                <button type="button" className="btn btn-primary btn-sm">Let's Chat App</button>
                             </div>
                             <div className="card-body" data-mdb-perfect-scrollbar="true">
                                 {
                                     isTopic ?
                                         <>
                                             {
-                                                chat !== "" ?
+                                                chat.length !== 0 ?
                                                     chat.message.map((message, index) => {
                                                         return <Message key={index} message={message}/>
                                                     }) :
@@ -55,7 +62,20 @@ export default function Chat() {
                                 }
                             </div>
 
-                            <FormMessage currentUser={currentUser}/>
+                            <div className="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                                     alt="avatar 3"/>
+                                <form className="me-3" onSubmit={handleSubmit}>
+                                    <input type="text" name="message" className="form-control form-control-lg"
+                                           id="exampleFormControlInput1"
+                                           placeholder="Type message"/>
+                                    <button type="submit" className="btn btn-primary btn-sm">Envoyer</button>
+                                </form>
+                                <a className="ms-1 text-muted" href="#!"><i
+                                    className="fas fa-paperclip"></i></a>
+                                <a className="ms-3 text-muted" href="#!"><i className="fas fa-smile"></i></a>
+                                <a className="ms-3" href="#!"><i className="fas fa-paper-plane"></i></a>
+                            </div>
 
                         </div>
 

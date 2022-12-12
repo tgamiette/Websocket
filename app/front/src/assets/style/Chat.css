@@ -37,3 +37,8 @@ img {
 .text-center.mx-3.mb-0 {
     color: #a2aab7;
 }
+
+.justify-content-center {
+    display: flex;
+    justify-content: center;
+}

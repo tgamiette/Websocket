@@ -2,6 +2,11 @@ import {useLocation, useNavigate, navigate} from "react-router-dom";
 import {useContext, useState} from "react";
 import {userContext} from "../Context/UserContext";
 import useGetJWT from "../Hook/useGetJWT";
+import {selectUser, setUser} from "../Redux/userSlice";
+import {useSelector, useDispatch} from "react-redux";
+import jwt from 'jwt-decode';
+import {useCookies} from "react-cookie";
+
 
 export default function Login() {
     const navigate = useNavigate();
@@ -11,7 +16,8 @@ export default function Login() {
     const getJWT = useGetJWT()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [loggedUser, setLoggedUser] = useContext(userContext);
+    const [cookies, setCookie] = useCookies(["jwt"]);
+    const dispatch = useDispatch();
 
     const handleUsername = (e) => {
         setUsername(e.target.value);
@@ -25,7 +31,12 @@ export default function Login() {
         e.preventDefault();
         getJWT(username, password).then(data => {
             if (data.JWT) {
-                setLoggedUser(data.JWT);
+                const deparse = jwt(data.JWT);
+                dispatch(setUser({
+                    jwt: data.JWT,
+                    username: deparse.mercure.payload.username,
+                    id: deparse.mercure.payload.userid,
+                }));
                 navigate(from, {replace: true});
             } else {
                 console.log(data)

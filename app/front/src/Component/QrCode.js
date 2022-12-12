@@ -7,7 +7,9 @@ export default function QrCode() {
 
     return (
         <div>
-            <h1 className='m-5 text-center'>Scan the QR code to login</h1>
+            <h1 className='m-5 text-center'>Scanner votre Qr code</h1>
+
+            <a href={"/"} className="btn btn-warning">Retour</a>
             <div className='d-flex justify-content-center'>
                 <QRCode
                     size={100}
