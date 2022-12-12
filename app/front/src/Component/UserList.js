@@ -42,30 +42,6 @@ export default function UserList() {
         console.log(JSON.parse(e.data));
     }
 
-    useEffect(() => {
-        getUserList().then(data => setUserList(data.users));
-
-
-        const url = new URL('http://localhost:9090/.well-known/mercure');
-        url.searchParams.append('topic', 'https://example.com/my-private-topic');
-
-        console.log(url.toString());
-
-        const eventSource = new EventSource(url,
-
-
-            {
-
-                withCredentials: true,
-
-            });
-        eventSource.onmessage = handleMessage;
-
-        return () => {
-            eventSource.close()
-        }
-
-    }, [])
 
     return (
         <div className='m-5 text-center div_userlist'>

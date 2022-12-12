@@ -16,6 +16,24 @@ export default function Chat() {
     const recipient = state.state.recipient;
     const [isReload, setIsReload] = useState(false);
 
+    useEffect(() => {
+        const url = new URL('http://localhost:9090/.well-known/mercure');
+        url.searchParams.append('topic', 'https://example.com/my-private-topic');
+        console.log(url.toString());
+
+        const eventSource = new EventSource(url, {
+            withCredentials: true
+        });
+        eventSource.onmessage = (event) => {
+            console.log(event.data);
+            setIsReload(true);
+        };
+
+        return () => {
+            eventSource.close()
+        }
+    }, [])
+
 
     useEffect(() => {
         if (isTopic) {
@@ -32,7 +50,6 @@ export default function Chat() {
         if (!isTopic) {
             setIsTopic(true);
         }
-        setIsReload(true);
     }
 
     return (

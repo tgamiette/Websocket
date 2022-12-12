@@ -10,14 +10,17 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 use function Symfony\Component\String\b;
 
-class ChatHelper {
-    public function __construct(private readonly ChatRepository $chatRepository, private readonly Security $security, EntityManagerInterface $em) {
+class ChatHelper
+{
+    public function __construct(private readonly ChatRepository $chatRepository, private readonly Security $security, EntityManagerInterface $em)
+    {
     }
 
     /**
      * @throws \Exception
      */
-    public function hasAccessChat(Chat $chat) {
+    public function hasAccessChat(Chat $chat)
+    {
         $user = $this->security->getUser();
         $topic = explode('.', $chat->getTopic());
 
@@ -32,7 +35,8 @@ class ChatHelper {
      * @param array<User> $recipient
      * @return Chat
      */
-    public function getChat(array $recipient): Chat {
+    public function getChat(array $recipient): Chat
+    {
         array_push($recipient, $this->security->getUser());
         sort($recipient);
         $topic = implode('.', array_map(fn(User $user) => $user->getId(), $recipient));
@@ -51,7 +55,8 @@ class ChatHelper {
      * @param array<User> $recipient
      * @return Chat
      */
-    public function getListPublishChat(Chat $chat): array {
+    public function getListPublishChat(Chat $chat): array
+    {
         $listPublish = [];
         $baseUri = 'https://example.com/user/';
 
@@ -66,7 +71,8 @@ class ChatHelper {
         return $listPublish;
     }
 
-    private function getUserListChat(Chat $chat): Collection {
+    private function getUserListChat(Chat $chat): Collection
+    {
         $topic = explode('.', $chat->getTopic());
         $userCollection = $this->em->getRepository(User::class)->findBy(['id' => $topic]);
 

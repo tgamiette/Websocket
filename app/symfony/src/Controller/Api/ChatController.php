@@ -18,13 +18,16 @@ use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/chat', name: 'api_chat_')]
-class ChatController extends AbstractController {
-    public function __construct(private ChatHelper $chatHelper, private EntityManagerInterface $em) {
+class ChatController extends AbstractController
+{
+    public function __construct(private ChatHelper $chatHelper, private EntityManagerInterface $em)
+    {
     }
 
     #[Route('/{topic}', name: 'chat_getMessages', methods: 'GET')]
     #[IsGranted('ROLE_USER')]
-    public function getTopicMessages(ChatRepository $chatRepository, string $topic): JsonResponse {
+    public function getTopicMessages(ChatRepository $chatRepository, string $topic): JsonResponse
+    {
         $chat = $chatRepository->findOneByTopic($topic);
 
         if (!$chat) {
@@ -39,7 +42,8 @@ class ChatController extends AbstractController {
     }
 
     #[Route('/send-message', name: 'chat_sendMessage', methods: 'POST')]
-    public function createMessage(Request $request, HubInterface $hub) {
+    public function createMessage(Request $request, HubInterface $hub)
+    {
         $content = $request->get('content');
         $recipientList = $request->get('recipient');
         $recipientList = explode(';', $recipientList);
@@ -54,8 +58,7 @@ class ChatController extends AbstractController {
         //helper pour check s'il a bien les droits pour envoyer un message sur ce chat
         try {
             $this->chatHelper->hasAccessChat($chat);
-        }
-        catch (HttpException $e) {
+        } catch (HttpException $e) {
             throw new HttpException(Response::HTTP_UNAUTHORIZED);
         }
 
@@ -81,10 +84,26 @@ class ChatController extends AbstractController {
                 'sender' => $userLogged->getUsername(),
                 'recipient' => $recipientList,
                 'topic' => $chat->getTopic()
-            ], context: ['groups'=>'get:chat']),
+            ], context: ['groups' => 'get:chat']),
             false,
         ));
 
         return $this->json(['message' => "Message envoyé"], context: ['groups' => 'get:chat']);
+    }
+
+    #[Route('/user/{id}', name: 'chat_getPrivateMessages', methods: 'GET')]
+    #[IsGranted('ROLE_USER')]
+    public function getPrivateTopicMessages(ChatRepository $chatRepository, $id): JsonResponse
+    {
+        /** @var User $userLogged
+         */
+
+        $userLogged = $this->getUser();
+        $user2 = $this->em->getRepository(User::class)->find($id);
+        $chat = $this->chatHelper->getChat([$user2]);
+
+        $messageCollection = $chat->getMessages();
+
+        return $this->json(['id' => $chat->getTopic(), 'message' => $messageCollection], context: ['groups' => 'get:chat']);
     }
 }
