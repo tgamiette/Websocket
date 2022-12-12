@@ -21,11 +21,9 @@ services:
     restart: always
     volumes:
       - ./app/front:/app/react
-      - node_module:/app/react/node_modules
+      - react_module:/app/react/node_modules
       - ./app/nativeReact:/app/react_native_app
-      #            - ./react_native_app/package.json:/opt/react_native_app/package.json
-      #            - ./react_native_app/package-lock.json:/opt/react_native_app/package-lock.json
-      - notused:/app/react_native_app/node_modules
+      - native_module:/app/react_native_app/node_modules
     ports:
       - "3000:3000"
       - '19006:19006'
@@ -90,10 +88,9 @@ services:
 #            - caddy_data:/data
 #            - caddy_config:/config
 
-
 volumes:
   db-data:
-  node_module:
-  notused:
+  react_module:
+  native_module:
 #    caddy_data:
 #    caddy_config:
