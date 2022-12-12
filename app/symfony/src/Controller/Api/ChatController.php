@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/chat', name: 'api_chat_')]
@@ -37,17 +39,25 @@ class ChatController extends AbstractController {
     }
 
     #[Route('/send-message', name: 'chat_sendMessage', methods: 'POST')]
-    public function createMessage(Request $request) {
+    public function createMessage(Request $request, HubInterface $hub) {
         $content = $request->get('content');
-        $recipientName = $request->get('recipient');
+        $recipientList = $request->get('recipient');
+        $recipientList = explode(';', $recipientList);
 
         /** @var User $userLogged */
         $userLogged = $this->getUser();
-        $recipient = $this->em->getRepository(User::class)->findOneBy(['username' => $recipientName]);
-        $chat = $this->chatHelper->getChat($recipient);
+        $recipientCollection = $this->em->getRepository(User::class)->findBy(['username' => $recipientList]);
+
+
+        $chat = $this->chatHelper->getChat($recipientCollection);
 
         //helper pour check s'il a bien les droits pour envoyer un message sur ce chat
-        $this->chatHelper->hasAccessChat($chat);
+        try {
+            $this->chatHelper->hasAccessChat($chat);
+        }
+        catch (HttpException $e) {
+            throw new HttpException(Response::HTTP_UNAUTHORIZED);
+        }
 
 
         $message = new Message();
@@ -61,6 +71,20 @@ class ChatController extends AbstractController {
         $this->em->persist($message);
         $this->em->flush();
 
-        return $this->json(['message' => "Message envoye"], context: ['group' => 'default']);
+        $listPublish = $this->chatHelper->getListPublishChat($chat);
+        $listPublish[] = "https://example.com/my-private-topic";
+
+        $hub->publish(new Update(
+            $listPublish,
+            $this->json([
+                'message' => $message,
+                'sender' => $userLogged->getUsername(),
+                'recipient' => $recipientList,
+                'topic' => $chat->getTopic()
+            ], context: ['groups'=>'get:chat']),
+            false,
+        ));
+
+        return $this->json(['message' => "Message envoyé"], context: ['groups' => 'get:chat']);
     }
 }
