@@ -1,11 +1,9 @@
 import React from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {NavigationContainer} from "@react-navigation/native";
-<<<<<<< HEAD
-import Login from "../Screens/login";
-=======
+
 import Login from "../Auth/login";
->>>>>>> d90da6d0 (start react native project)
+import Chat from "../Components/Chat";
 import List from "../Screens/list";
 
 
@@ -17,6 +15,7 @@ export default function Route() {
                 <Stack.Navigator>
                     <Stack.Screen name="Login" component={Login}/>
                     <Stack.Screen name="List" component={List}/>
+                    <Stack.Screen name="Chat" component={Chat}/>
                 </Stack.Navigator>
             </NavigationContainer>
     );
