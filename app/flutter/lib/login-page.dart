@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
         final jwt = data["JWT"];
         final box = GetStorage();
 
-        storage.setItem('jwt', data["JWT"]);
+        storage.setItem('jwt', jwt);
         box.write("jwt", jwt);
 
         Navigator.pushReplacement(
@@ -63,16 +63,14 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
     }) //if success
-        .catchError((error) => {
-              setState(() {
-                errormsg = error.toString();
-                error = true;
-                showprogress = false;
-              })
-            }); //if error
+        .catchError((error) {
+      setState(() {
+        errormsg = "Erreur serveur";
+        error = true;
+        showprogress = false;
+      });
+    }); //if error
   }
-
-  // }
 
   @override
   void initState() {
@@ -232,8 +230,8 @@ class _LoginPageState extends State<LoginPage> {
                           width: 30,
                           child: CircularProgressIndicator(
                             backgroundColor: Colors.orange[100],
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                                Colors.deepOrangeAccent),
+                            valueColor:
+                                const AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
                           ),
                         )
                       : Text(
@@ -262,17 +260,15 @@ Widget logoIcon = Container(
   ),
   child: Container(
     padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(50),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 5,
-            blurRadius: 20,
-            offset: const Offset(0, 3),
-          ),
-        ]),
+    decoration:
+        BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50), boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.1),
+        spreadRadius: 5,
+        blurRadius: 20,
+        offset: const Offset(0, 3),
+      ),
+    ]),
     child: Image.asset(AssetsRes.IMG),
   ),
 );
@@ -285,12 +281,7 @@ Widget titleSection = Container(
       GradientText(
         'WhatsApp',
         gradient: const LinearGradient(
-          colors: [
-            Colors.black,
-            Colors.black87,
-            Colors.lightGreen,
-            Colors.green
-          ],
+          colors: [Colors.black, Colors.black87, Colors.lightGreen, Colors.green],
         ),
         style: GoogleFonts.lobster(fontSize: 40, fontWeight: FontWeight.w900),
       ),
@@ -298,8 +289,7 @@ Widget titleSection = Container(
   ),
 );
 
-InputDecoration myInputDecoration(
-    {required String label, required IconData icon}) {
+InputDecoration myInputDecoration({required String label, required IconData icon}) {
   return InputDecoration(
     hintText: label,
     //show label as placeholder

@@ -1,3 +1,4 @@
+import 'package:WhatsAppClone/models/chatUserModel.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import '../models/user.dart';
@@ -82,9 +83,7 @@ class ApiService {
   static Future<void> deleteUser(String id) async {
     final response = await delete(Uri.parse('$baseUrl/user/$id'));
 
-    return response.statusCode == 200
-        ? null
-        : throw Exception("Failed to delete user");
+    return response.statusCode == 200 ? null : throw Exception("Failed to delete user");
   }
 
   static Future<dynamic> login(String username, String password) async {
@@ -117,12 +116,26 @@ class ApiService {
   }
 
   static Future<void> logout(String token) async {
-    final response =
-        await post(Uri.parse("$baseUrl/logout"), headers: <String, String>{
+    final response = await post(Uri.parse("$baseUrl/logout"), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     });
-    return response.statusCode == 200
-        ? null
-        : throw Exception("Failed to logout");
+    return response.statusCode == 200 ? null : throw Exception("Failed to logout");
+  }
+
+  static Future<dynamic> getChatsUsers(String token) async {
+    final response = await get(Uri.parse('$baseUrl/api/user/list'), headers: <String, String>{
+      "Content-Type": "application/json; charset=UTF-8",
+      "Authorization": "Bearer $token",
+    }).then((value) {
+      Map<String, dynamic> data = json.decode(value.body);
+      final chatUserJson = data["users"];
+      List<dynamic> chatUsersList = chatUserJson.map((e) { return ChatUsers.fromJson(e);}).toList();
+      return chatUsersList;
+    }).catchError((error) {
+      print("error");
+      print(error);
+      });
+
+    return response;
   }
 }

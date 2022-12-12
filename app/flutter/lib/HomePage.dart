@@ -1,7 +1,8 @@
+import 'package:WhatsAppClone/chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 
-import 'ListUserPage.dart';
+import 'chatPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,28 +12,54 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
+  int _currentIndex = 0;
+  static const List<Widget> _screens = [ChatPage(), SearchPage(), CategoryPage()];
 
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: const Text("Chat App"),
-      ),
-      body: const SingleChildScrollView(
-        child: Center(
-          child: ListUserPage(),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Envoyer un nouveau message',
-        onPressed: () => {_showOptions(context)},
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+  void _updateIndex(int value) {
+    setState(() {
+      _currentIndex = value;
+    });
   }
 
+  @override
+  Widget build(BuildContext context) {
+    // print(GetStorage().read('jwt'));
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: -10,
+        backgroundColor:  Colors.white30,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: "Chats",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group_work),
+            label: "Channels",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_box),
+            label: "Profile",
+          ),
+        ],
+        onTap: _updateIndex,
+        currentIndex: _currentIndex,
+      ),
+      body: _screens[_currentIndex],
+      // floatingActionButton: FloatingActionButton(
+      //   tooltip: 'Envoyer un nouveau message',
+      //   onPressed: () => {_showOptions(context)},
+      //   child: const Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
 
   void _showOptions(BuildContext context) {
     showModalBottomSheet(
@@ -64,5 +91,32 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+}
+class SearchPage extends StatefulWidget {
+  const SearchPage({Key? key}) : super(key: key);
+
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class CategoryPage extends StatefulWidget {
+  const CategoryPage({Key? key}) : super(key: key);
+
+  @override
+  State<CategoryPage> createState() => _CategoryPageState();
+}
+
+class _CategoryPageState extends State<CategoryPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

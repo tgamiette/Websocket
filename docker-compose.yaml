@@ -73,7 +73,7 @@ services:
                 cors_origins "http://localhost:8245"
 #                anonymous
         # Uncomment the following line to enable the development mode
-#        command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
+        command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
         ports:
             - "9090:80"
             - "443:443"

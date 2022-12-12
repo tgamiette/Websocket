@@ -13,12 +13,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/chat', name: 'api_chat_')]
 class ChatController extends AbstractController
 {
-    public function __construct(private ChatHelper $chatHelper, private EntityManagerInterface $em)
+    public function __construct(private ChatHelper $chatHelper, private EntityManagerInterface $em,private HubInterface $hub)
     {
     }
 
@@ -53,6 +55,20 @@ class ChatController extends AbstractController
         //helper pour check s'il a bien les droits pour envoyer un message sur ce chat
         $this->chatHelper->hasAccessChat($chat);
 
+        $update = new Update(
+            [
+                "https://example.com/my-private-topic",
+                "https://example.com/user/{$userLogged->getId()}/?topic=" . urlencode("https://example.com/my-private-topic"),
+            ],
+            json_encode([
+                'user' => $userLogged->getUsername(),
+                'id' => $userLogged->getId(),
+                'content' => $content,
+            ]),
+            false
+        );
+//send to mercure
+        $this->hub->publish($update);
 
         $message = new Message();
         $message

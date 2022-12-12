@@ -58,4 +58,23 @@ class ChatController extends AbstractController
         $em->persist($message);
         $em->flush();
     }
+
+    #[Route('/chat/{chat}', name: 'chat_getMessages', methods: 'GET')]
+    #[IsGranted('ROLE_USER')]
+    public function getListTopics(ChatRepository $chatRepository, $chat): JsonResponse
+    {
+        /** @var User $userLogged */
+        $userLogged = $this->getUser();
+        $user = $this->getUser();
+        $chat = $chatRepository->findOneBy(['chat' => $chat]);
+
+        $chatHelper->checkAccessChat($id);
+
+        if ($chat->getTopic() !== ($user->getId() . '.' . $userLogged->getId())) {
+            throw new HttpException(Response::HTTP_FORBIDDEN);
+        }
+        $messageCollection = $chat->getMessages();
+
+        return $this->json(['message' => $messageCollection], context: ['group' => 'default']);
+    }
 }
